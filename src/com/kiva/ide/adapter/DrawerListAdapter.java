@@ -3,6 +3,7 @@ package com.kiva.ide.adapter;
 import static com.kiva.ide.bean.DrawerListItem.ID_GOTO;
 import static com.kiva.ide.bean.DrawerListItem.ID_NEW;
 import static com.kiva.ide.bean.DrawerListItem.ID_OPEN;
+import static com.kiva.ide.bean.DrawerListItem.ID_OPEN_REC;
 import static com.kiva.ide.bean.DrawerListItem.ID_SAVE;
 import static com.kiva.ide.bean.DrawerListItem.ID_SAVEAS;
 import static com.kiva.ide.bean.DrawerListItem.ID_SEARCH;
@@ -27,19 +28,19 @@ public class DrawerListAdapter extends BaseAdapter {
 	
 	private LayoutInflater inflater;
 	private List<DrawerListItem> allDatas = new ArrayList<DrawerListItem>();
-	private List<DrawerListItem> datas = new ArrayList<DrawerListItem>();
+	private final int baseCount;
 	
 	public DrawerListAdapter(Context ctx, List<DrawerListItem> items) {
 		inflater = LayoutInflater.from(ctx);
 		
-		datas.add(new DrawerListItem(ID_NEW, ctx.getString(R.string.title_new_file)));
-		datas.add(new DrawerListItem(ID_OPEN, ctx.getString(R.string.title_open_file)));
-		datas.add(new DrawerListItem(ID_SAVE, ctx.getString(R.string.title_save_file)));
-		datas.add(new DrawerListItem(ID_SAVEAS, ctx.getString(R.string.title_save_as)));
-		datas.add(new DrawerListItem(ID_SEARCH, ctx.getString(R.string.title_search)));
-		datas.add(new DrawerListItem(ID_GOTO, ctx.getString(R.string.title_goto)));
-		
-		allDatas.addAll(datas);
+		allDatas.add(new DrawerListItem(ID_NEW, ctx.getString(R.string.title_new_file)));
+		allDatas.add(new DrawerListItem(ID_OPEN, ctx.getString(R.string.title_open_file)));
+		allDatas.add(new DrawerListItem(ID_OPEN_REC, ctx.getString(R.string.title_open_rec)));
+		allDatas.add(new DrawerListItem(ID_SAVE, ctx.getString(R.string.title_save_file)));
+		allDatas.add(new DrawerListItem(ID_SAVEAS, ctx.getString(R.string.title_save_as)));
+		allDatas.add(new DrawerListItem(ID_SEARCH, ctx.getString(R.string.title_search)));
+		allDatas.add(new DrawerListItem(ID_GOTO, ctx.getString(R.string.title_goto)));
+		baseCount = allDatas.size();
 		
 		if (items != null) {
 			allDatas.addAll(items);
@@ -105,6 +106,10 @@ public class DrawerListAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 	
+	public int getBaseCount() {
+		return baseCount;
+	}
+
 	class ViewHolder {
 		public ImageView img;
 		public TextView titleView;

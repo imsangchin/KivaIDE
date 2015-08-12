@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -102,9 +103,9 @@ public class ChooserActivity extends Activity implements OnClickListener,
 		selectedFilePos = -1;
 	}
 
-	private void loadDir(File dir) {
+	private boolean loadDir(File dir) {
 		if (dir == null) {
-			return;
+			return false;
 		}
 
 		List<Holder> data = listCurDir(dir);
@@ -114,6 +115,8 @@ public class ChooserActivity extends Activity implements OnClickListener,
 
 		this.currentPath = dir;
 		this.pathView.setText(dir.getAbsolutePath());
+		
+		return true;
 	}
 
 	private List<Holder> listCurDir(File path) {
@@ -240,6 +243,16 @@ public class ChooserActivity extends Activity implements OnClickListener,
 		btnOk.setEnabled(true);
 		editText.setText(f.getName());
 		selectedFilePos = position;
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+			if (loadDir(currentPath.getParentFile())) {
+				return true;
+			}
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private void createNewFolder(int position) {

@@ -9,6 +9,7 @@ public class DrawerListItem {
 	public static final int ID_SAVEAS = -7;
 	public static final int ID_SEARCH = -6;
 	public static final int ID_GOTO = -5;
+	public static final int ID_OPEN_REC = -4;
 	
 	
 	public String title;

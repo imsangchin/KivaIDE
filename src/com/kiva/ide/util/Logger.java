@@ -6,25 +6,25 @@ public class Logger {
 
 	public static final String TAG = "KivaIDE";
 
-	public static void i(String msg) {
-		Log.i(TAG, msg);
+	public static void i(Object msg) {
+		Log.i(TAG, msg.toString());
 	}
 
-	public static void d(String msg) {
-		Log.d(TAG, msg);
+	public static void d(Object msg) {
+		Log.d(TAG, msg.toString());
 	}
 
-	public static void e(String msg) {
-		Log.e(TAG, msg);
+	public static void e(Object msg) {
+		Log.e(TAG, msg.toString());
 	}
 
-	public static void w(String msg) {
-		Log.w(TAG, msg);
+	public static void w(Object msg) {
+		Log.w(TAG, msg.toString());
 
 	}
 
-	public static void v(String msg) {
-		Log.v(TAG, msg);
+	public static void v(Object msg) {
+		Log.v(TAG, msg.toString());
 	}
 
 }

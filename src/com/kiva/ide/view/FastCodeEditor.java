@@ -14,6 +14,8 @@ import com.myopicmobile.textwarrior.common.Lexer;
 
 public class FastCodeEditor extends FreeScrollingTextField {
 	
+	private boolean firstSetText = true;
+	
 	public FastCodeEditor(Context arg0, AttributeSet arg1) {
 		super(arg0, arg1);
 		init();
@@ -46,7 +48,13 @@ public class FastCodeEditor extends FreeScrollingTextField {
 
 		DocumentProvider dp = new DocumentProvider(doc);
 		setDocumentProvider(dp);
-		setEdited(true);
+		
+		if (!firstSetText) {
+			setEdited(true);
+		} else {
+			setEdited(false);
+		}
+		
 
 		scrollTo(0, 0);
 	}

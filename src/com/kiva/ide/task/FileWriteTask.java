@@ -1,6 +1,7 @@
 package com.kiva.ide.task;
 
 import java.io.File;
+import java.util.List;
 
 import org.free.ceditor.FileSystem;
 
@@ -9,8 +10,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import com.kiva.ide.App;
 import com.kiva.ide.util.Constant;
 import com.kiva.ide.util.Logger;
+import com.myopicmobile.textwarrior.android.RecentFiles.RecentFile;
 
 public class FileWriteTask extends Thread implements ITask {
 
@@ -30,6 +33,7 @@ public class FileWriteTask extends Thread implements ITask {
 		data.putString(Constant.FILENAME, fileName);
 		data.putString(Constant.FILECONTENT, content);
 		data.putInt(Constant.HASH, hash);
+		
 	}
 
 	@Override

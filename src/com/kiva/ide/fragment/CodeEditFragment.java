@@ -28,6 +28,7 @@ public class CodeEditFragment extends Fragment implements iMainActivity {
 	private Bundle args;
 	private String absFilePath;
 	private Tab tab;
+	public boolean ext;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,18 @@ public class CodeEditFragment extends Fragment implements iMainActivity {
 		if (args != null) {
 			String content = args.getString(Constant.FILECONTENT, "");
 			editor.setText(content);
+
+			int x = args.getInt(Constant.CURX, -1);
+			int y = args.getInt(Constant.CURY, -1);
+			int p = args.getInt(Constant.CURSOR, -1);
+
+			if (p != -1) {
+				editor.moveCaret(p);
+			}
+
+			if (x != -1 && y != -1) {
+				editor.scrollTo(x, y);
+			}
 		}
 
 		setFileName(absFilePath);
@@ -71,13 +84,13 @@ public class CodeEditFragment extends Fragment implements iMainActivity {
 	public String getFileName() {
 		return absFilePath;
 	}
-	
+
 	public void setFileName(String absFilePath) {
 		if (tab != null) {
 			((TextView) tab.getCustomView().findViewById(R.id.idTabTitle))
 					.setText(new File(absFilePath).getName());
 		}
-		
+
 		this.absFilePath = absFilePath;
 	}
 
@@ -92,7 +105,22 @@ public class CodeEditFragment extends Fragment implements iMainActivity {
 	@Override
 	public void onPause() {
 		super.onPause();
+
+		int x = editor.getScrollX();
+		int y = editor.getScrollY();
+		int p = editor.getCaretPosition();
+
+		Logger.d("x:" + x + "  y:" + y + " p:" + p);
+
 		args.putString(Constant.FILECONTENT, editor.getText());
+		args.putInt(Constant.CURX, x);
+		args.putInt(Constant.CURY, y);
+		args.putInt(Constant.CURSOR, p);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
 	}
 
 	@Override

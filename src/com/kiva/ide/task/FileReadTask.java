@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import com.kiva.ide.App;
 import com.kiva.ide.util.Constant;
 import com.kiva.ide.util.Logger;
+import com.myopicmobile.textwarrior.android.RecentFiles.RecentFile;
 
 public class FileReadTask extends Thread implements ITask {
 
@@ -21,26 +23,35 @@ public class FileReadTask extends Thread implements ITask {
 	protected int result;
 	protected Bundle data;
 
-	public FileReadTask(String fileName) {
+	public FileReadTask(String fileName, RecentFile rf, boolean recent) {
 		this.fileName = fileName;
-		
+
 		data = new Bundle();
 		data.putString(Constant.FILENAME, fileName);
+
+		App.get().getRecentFiles().addRecentFile(fileName);
+		if (recent) {
+			if (rf != null) {
+				data.putInt(Constant.CURX, rf.getScrollX());
+				data.putInt(Constant.CURY, rf.getScrollY());
+				data.putInt(Constant.CURSOR, rf.getCaretPosition());
+			}
+		}
 	}
 
 	@Override
 	public void run() {
 		handler.sendEmptyMessage(Constant.WHAT_START);
-		
+
 		String text = FileSystem.StringFromFile(new File(fileName));
 
 		if (text != null) {
 			result = Activity.RESULT_OK;
-			
+
 			data.putString(Constant.FILECONTENT, text);
 		} else {
 			Logger.w("read file " + fileName + " failed");
-			
+
 			result = Activity.RESULT_CANCELED;
 			data = null;
 		}

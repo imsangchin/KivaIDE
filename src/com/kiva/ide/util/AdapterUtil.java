@@ -3,12 +3,14 @@ package com.kiva.ide.util;
 import static com.kiva.ide.R.drawable.ic_action_gotoline;
 import static com.kiva.ide.R.drawable.ic_action_new;
 import static com.kiva.ide.R.drawable.ic_action_open;
+import static com.kiva.ide.R.drawable.ic_action_openrecent;
 import static com.kiva.ide.R.drawable.ic_action_save;
 import static com.kiva.ide.R.drawable.ic_action_saveas;
 import static com.kiva.ide.R.drawable.ic_action_search;
 import static com.kiva.ide.bean.DrawerListItem.ID_GOTO;
 import static com.kiva.ide.bean.DrawerListItem.ID_NEW;
 import static com.kiva.ide.bean.DrawerListItem.ID_OPEN;
+import static com.kiva.ide.bean.DrawerListItem.ID_OPEN_REC;
 import static com.kiva.ide.bean.DrawerListItem.ID_SAVE;
 import static com.kiva.ide.bean.DrawerListItem.ID_SAVEAS;
 import static com.kiva.ide.bean.DrawerListItem.ID_SEARCH;
@@ -29,6 +31,8 @@ public class AdapterUtil {
 			return ic_action_new;
 		case ID_OPEN:
 			return ic_action_open;
+		case ID_OPEN_REC:
+			return ic_action_openrecent;
 		case ID_SAVE:
 			return ic_action_save;
 		case ID_SAVEAS:

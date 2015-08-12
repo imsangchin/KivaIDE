@@ -7,6 +7,9 @@ public class Constant {
 	public static final String ISSAVEAS = "is_save";
 	public static final String LAST_PATH = "last_path";
 	public static final String UNTITLED = "untitled";
+	public static final String CURX = "curx";
+	public static final String CURY = "cury";
+	public static final String CURSOR = "cursor";
 	
 	public static final String VERSION_NAME = "versionName";
 	public static final String VERSION_CODE = "versionCode";

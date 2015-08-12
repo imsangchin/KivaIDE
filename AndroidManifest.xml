@@ -38,9 +38,6 @@
             android:icon="@drawable/folder"
             android:label="@string/goto_choose" >
 		</activity>
-		<activity
-            android:name=".CrashReportActivity">
-		</activity>
 		
     </application>
 
