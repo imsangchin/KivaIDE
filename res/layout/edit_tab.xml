@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:id="@+id/idTabRoot"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:id="@+id/idTabTitle"
+        android:layout_centerInParent="true"
+        android:textStyle="italic"
+        style="@android:style/TextAppearance.Holo.Widget.ActionBar.Title"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

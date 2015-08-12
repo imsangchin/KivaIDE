@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">KivaIDE</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_new_file">New</string>
+    <string name="title_open_file">Open</string>
+    <string name="title_save_file">Save</string>
+    <string name="title_save_as">Save as</string>
+    <string name="title_search">Search</string>
+    <string name="title_goto">Goto</string>
+    <string name="no_files_are_open">No Files Are Open</string>
+    <string name="close_this">Close</string>
+    <string name="close_other">Close Other</string>
+    <string name="close_all">Close All</string>
+    <string name="operating">Operating</string>
+    <string name="please_wait">Please wait&#8230;</string>
+    <string name="goto_choose">Choose File</string>
+    <string name="file_name">File Name</string>
+    
+    <string name="rename">Rename</string>
+    <string name="new_name">New name:</string>
+    <string name="delete">Delete</string>
+    <string name="copy_path">Copy Path</string>
+    <string name="delete_ask">Do you really want to delete %s?</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="input_folder_name">Please input folder name</string>
+    <string name="input_file_name">Please input file name</string>
+    <string name="input_new_name">Please input new name</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="path_copied">The path has been copied to the clipboard</string>
+    <string name="new_folder">Create new folder</string>
+    <string name="new_file">Create new file</string>
+    <string name="already_exists">The path already exists!</string>
+    <string name="mkdir_fail">Create new folder failed!</string>
+    <string name="mkdir_succ">Create new folder successfully!</string>
+    <string name="save_succ">Save file successfuly!</string>
+    <string name="sorry">Sorry!</string>
+    <string name="please_report_error">Sorry, an unexpected exception has been threw!\n\nDo you want to report the crush dump?</string>
+	<string name="see_dump">Application has been crashed, see %s crash dump.</string>
+</resources>

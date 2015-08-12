@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@id/menu_close_this"
+        android:showAsAction="never"
+        android:title="@string/close_this"/>
+    <item
+        android:id="@id/menu_close_other"
+        android:showAsAction="never"
+        android:title="@string/close_other"/>
+    <item
+        android:id="@id/menu_close_all"
+        android:showAsAction="never"
+        android:title="@string/close_all"/>
+
+</menu>
