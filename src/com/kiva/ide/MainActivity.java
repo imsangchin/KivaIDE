@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -60,11 +61,13 @@ public class MainActivity extends Activity implements OnItemClickListener,
 	private DrawerListAdapter adapter;
 	private ProgressDialog waitDialog;
 	private Menu menu;
-	
+
+	private ActionBarDrawerToggle toggle;
+
 	private EditText findTextInput, replaceTextInput;
 	private Button findBtn, replaceBtn, replaceAllBtn;
 	private CheckBox caseInsensitiveCheck, wholeWordCheck;
-	
+
 	private volatile int taskCount = 0;
 
 	private Handler taskHandler = new Handler() {
@@ -108,13 +111,14 @@ public class MainActivity extends Activity implements OnItemClickListener,
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 	}
 
 	private void initView() {
 		drawer = (DrawerLayout) findViewById(R.id.idMainDrawerLayout);
 		drawerList = (ListView) findViewById(R.id.idMainDrawerList);
-		
+
 		replaceBtn = (Button) findViewById(R.id.idSearchStartReplace);
 		replaceAllBtn = (Button) findViewById(R.id.idSearchStartReplaceAll);
 		replaceTextInput = (EditText) findViewById(R.id.idSearchNewStr);
@@ -122,15 +126,18 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		findBtn = (Button) findViewById(R.id.idSearchStartFind);
 		caseInsensitiveCheck = (CheckBox) findViewById(R.id.idSearchCaseInsCheckBox);
 		wholeWordCheck = (CheckBox) findViewById(R.id.idSearchWholeWordCheckBox);
-		
 
 		drawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
+		toggle = new ActionBarDrawerToggle(this, drawer, R.drawable.ic_drawer,
+				R.string.yes, R.string.no);
+		toggle.setDrawerIndicatorEnabled(true);
+		toggle.syncState();
 
 		adapter = new DrawerListAdapter(this, null);
 		drawerList.setAdapter(adapter);
 		drawerList.setOnItemClickListener(this);
 		drawerList.setOnItemLongClickListener(this);
-		
+
 		findBtn.setOnClickListener(this);
 		replaceBtn.setOnClickListener(this);
 		replaceAllBtn.setOnClickListener(this);
@@ -195,6 +202,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 	}
 
 	private void gotoLine() {
+
 	}
 
 	private void saveFileAs() {
@@ -298,7 +306,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		tab.setCustomView(R.layout.edit_tab);
 
 		ab.addTab(tab, go);
-		
+
 		updateUndoRedo();
 	}
 
@@ -376,43 +384,43 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		} else {
 			ab.removeTab(t);
 		}
-		
-		updateUndoRedo();		
+
+		updateUndoRedo();
 	}
 
 	private void updateUndoRedo() {
 		if (menu == null) {
 			return;
 		}
-		
+
 		boolean hasTab = getActionBar().getTabCount() > 0;
-		
+
 		MenuItem i = menu.findItem(R.id.menu_undo);
 		if (i != null) {
 			i.setVisible(hasTab);
 		}
-		
+
 		i = menu.findItem(R.id.menu_redo);
 		if (i != null) {
 			i.setVisible(hasTab);
 		}
 	}
-	
+
 	private void doUndo() {
 		CodeEditFragment frag = getCurrentPage();
 		if (frag == null) {
 			return;
 		}
-		
+
 		frag.undo();
 	}
-	
+
 	private void doRedo() {
 		CodeEditFragment frag = getCurrentPage();
 		if (frag == null) {
 			return;
 		}
-		
+
 		frag.redo();
 	}
 
@@ -550,7 +558,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
-		
+
 		this.menu = menu;
 		return true;
 	}
@@ -560,6 +568,9 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		int id = item.getItemId();
 
 		switch (id) {
+		case android.R.id.home:
+			toggleDrawer();
+			break;
 		case R.id.menu_close_this:
 			doCloseThis();
 			break;
@@ -580,17 +591,22 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void toggleDrawer() {
+		int gravity = Gravity.START;
+
+		if (drawer.isDrawerOpen(gravity)) {
+			drawer.closeDrawer(gravity);
+		} else {
+			drawer.openDrawer(gravity);
+		}
+	}
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_MENU
 				&& event.getAction() == KeyEvent.ACTION_DOWN) {
-			int gravity = Gravity.START;
-
-			if (drawer.isDrawerOpen(gravity)) {
-				drawer.closeDrawer(gravity);
-			} else {
-				drawer.openDrawer(gravity);
-			}
+			
+			toggleDrawer();
 			return true;
 		} else if (keyCode == KeyEvent.KEYCODE_BACK
 				&& event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -612,7 +628,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			drawer.closeDrawer(Gravity.START);
 			return;
 		}
-		
+
 		if (drawer.isDrawerOpen(Gravity.END)) {
 			drawer.closeDrawer(Gravity.END);
 			return;
@@ -705,29 +721,30 @@ public class MainActivity extends Activity implements OnItemClickListener,
 
 	@Override
 	public void onClick(View v) {
-		
+
 		CodeEditFragment frag = getCurrentPage();
 		if (frag == null) {
 			return;
 		}
-		
+
 		String textToFind = findTextInput.getText().toString();
 		if (TextUtils.isEmpty(textToFind)) {
 			return;
 		}
-		
+
 		boolean caseInsensitive = caseInsensitiveCheck.isChecked();
 		boolean wholeWord = wholeWordCheck.isChecked();
 		String textToReplace = replaceTextInput.getText().toString();
-		
+
 		if (v == findBtn) {
 			frag.find(textToFind, caseInsensitive, wholeWord);
 		} else if (v == replaceBtn) {
-			frag.replace(textToFind, textToReplace, false, caseInsensitive, wholeWord);
+			frag.replace(textToFind, textToReplace, false, caseInsensitive,
+					wholeWord);
 		} else if (v == replaceAllBtn) {
-			frag.replace(textToFind, textToReplace, true, caseInsensitive, wholeWord);
+			frag.replace(textToFind, textToReplace, true, caseInsensitive,
+					wholeWord);
 		}
 	}
 
-	
 }

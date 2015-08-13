@@ -19,14 +19,25 @@ import android.widget.Toast;
 
 import com.kiva.ide.R;
 import com.kiva.ide.action.EditAction;
+import com.kiva.ide.syntax.LanguageShell;
+import com.kiva.ide.util.AdapterUtil;
 import com.kiva.ide.util.Constant;
 import com.kiva.ide.util.Logger;
 import com.kiva.ide.view.FastCodeEditor;
 import com.myopicmobile.textwarrior.android.SelectionModeListener;
 import com.myopicmobile.textwarrior.common.DocumentProvider;
 import com.myopicmobile.textwarrior.common.FindThread;
-import com.myopicmobile.textwarrior.common.ProgressObserver;
 import com.myopicmobile.textwarrior.common.FindThread.FindResults;
+import com.myopicmobile.textwarrior.common.Language;
+import com.myopicmobile.textwarrior.common.LanguageCpp;
+import com.myopicmobile.textwarrior.common.LanguageCsharp;
+import com.myopicmobile.textwarrior.common.LanguageJava;
+import com.myopicmobile.textwarrior.common.LanguageJavascript;
+import com.myopicmobile.textwarrior.common.LanguageNonProg;
+import com.myopicmobile.textwarrior.common.LanguagePHP;
+import com.myopicmobile.textwarrior.common.LanguagePython;
+import com.myopicmobile.textwarrior.common.Lexer;
+import com.myopicmobile.textwarrior.common.ProgressObserver;
 
 @SuppressWarnings("deprecation")
 public class CodeEditFragment extends Fragment implements iMainActivity,
@@ -118,6 +129,37 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 					.setText(new File(absFilePath).getName());
 		}
 
+		switch (AdapterUtil.getFileIcon(getActivity(), new File(absFilePath))) {
+		case R.drawable.file_java:
+			if (absFilePath.endsWith(".js")) {
+				setLang(LanguageJavascript.getInstance());
+			} else {
+				setLang(LanguageJava.getInstance());
+			}
+			break;
+		case R.drawable.file_php:
+			setLang(LanguagePHP.getInstance());
+			break;
+		case R.drawable.file_python:
+			setLang(LanguagePython.getInstance());
+			break;
+		case R.drawable.file_executable_src:
+			if (absFilePath.endsWith(".m") || absFilePath.endsWith(".mm")) {
+				setLang(LanguageCsharp.getInstance());
+			} else {
+				setLang(LanguageCpp.getInstance());
+			}
+			break;
+		case R.drawable.file_shell:
+			setLang(LanguageShell.getInstance());
+			break;
+		default:
+			setLang(LanguageNonProg.getInstance());
+			break;
+		}
+		
+		editor.respan();
+		
 		this.absFilePath = absFilePath;
 	}
 
@@ -187,6 +229,10 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 			editor.setDocumentProvider(doc);
 			setEditorStatus(x, y, p);
 		}
+	}
+
+	public void setLang(Language l) {
+		Lexer.setLanguage(l);
 	}
 
 	public void setEditorStatus(int x, int y, int p) {

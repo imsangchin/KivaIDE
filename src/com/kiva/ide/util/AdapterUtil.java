@@ -51,7 +51,7 @@ public class AdapterUtil {
 		if (file.isDirectory()) {
 			return R.drawable.folder;
 		}
-		
+
 		if (file.getName().equals(ctx.getString(R.string.new_folder))) {
 			return R.drawable.file_new_folder;
 		}
@@ -61,7 +61,8 @@ public class AdapterUtil {
 		if (name.endsWith(".c") || name.endsWith(".cpp")
 				|| name.endsWith(".cxx") || name.endsWith(".cc")
 				|| name.endsWith(".h") || name.endsWith(".hpp")
-				|| name.endsWith(".hxx")) {
+				|| name.endsWith(".hxx") || name.endsWith("m")
+				|| name.endsWith("mm")) {
 			return R.drawable.file_executable_src;
 
 		} else if (name.endsWith(".java") || name.endsWith(".js")) {
@@ -75,20 +76,23 @@ public class AdapterUtil {
 
 		} else if (name.endsWith(".py")) {
 			return R.drawable.file_python;
+			
+		} else if (name.endsWith(".sh") || name.endsWith(".bash")) {
+			return R.drawable.file_shell;
 
-		} else if (name.equals(".makefile") || name.equals(".gnumakefile")
+		} else if (name.equals("makefile") || name.equals("gnumakefile")
 				|| name.endsWith(".mk")) { // lowercase
 			return R.drawable.file_makefile;
 
-		} else if (name.contains(".readme") || name.contains(".license")
-				|| name.contains(".notice")) { // lowercase
+		} else if (name.contains("readme") || name.contains("license")
+				|| name.contains("notice")) { // lowercase
 			return R.drawable.file_readme;
 
 		} else if (name.indexOf(".") == -1 && file.canExecute()) {
 			return R.drawable.file_executable;
 		}
 
-		return R.drawable.file_noemal;
+		return R.drawable.file_normal;
 	}
-
+	
 }
