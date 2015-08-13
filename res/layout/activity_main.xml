@@ -3,16 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <!--
-         <TextView
-        style="@android:style/TextAppearance.DeviceDefault.Large"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/no_files_are_open"
-        android:textStyle="bold" />
-    -->
-
     <FrameLayout
         android:id="@+id/idMainContainer"
         android:layout_width="match_parent"
@@ -27,5 +17,74 @@
         android:divider="@null"
         android:dividerHeight="3dp"
         android:padding="10dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:padding="10dp" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/str_to_find" />
+
+            <EditText
+                android:id="@+id/idSearchStr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/new_str" />
+
+            <EditText
+                android:id="@+id/idSearchNewStr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true" />
+
+            <CheckBox
+                android:id="@+id/idSearchCaseInsCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/case_insen" />
+            
+            <CheckBox
+                android:id="@+id/idSearchWholeWordCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/whole_word" />
+            
+
+            <Button
+                android:id="@+id/idSearchStartFind"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/find" />
+
+            <Button
+                android:id="@+id/idSearchStartReplace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/replace" />
+
+            <Button
+                android:id="@+id/idSearchStartReplaceAll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/replace_all" />
+        </LinearLayout>
+    </ScrollView>
 
 </android.support.v4.widget.DrawerLayout>

@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
-    <item type="id" name="menu_close_this"/>
-    <item type="id" name="menu_close_other"/>
-    <item type="id" name="menu_close_all"/>
-    
-    <item type="id" name="extra" />
-    
+
+    <item name="menu_close_this" type="id"/>
+    <item name="menu_close_other" type="id"/>
+    <item name="menu_close_all" type="id"/>
+    <item name="menu_select_all" type="id"/>
+    <item name="menu_copy" type="id"/>
+    <item name="menu_cut" type="id"/>
+    <item name="menu_paste" type="id"/>
+    <item name="menu_undo" type="id"/>
+    <item name="menu_redo" type="id"/>
+
 </resources>

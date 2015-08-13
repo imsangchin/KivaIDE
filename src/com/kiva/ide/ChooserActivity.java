@@ -1,12 +1,8 @@
 package com.kiva.ide;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -31,6 +27,7 @@ import android.widget.Toast;
 
 import com.kiva.ide.adapter.FileExplorerAdapter;
 import com.kiva.ide.util.Constant;
+import com.kiva.ide.util.ExplorerUtil;
 
 public class ChooserActivity extends Activity implements OnClickListener,
 		OnItemClickListener {
@@ -108,7 +105,7 @@ public class ChooserActivity extends Activity implements OnClickListener,
 			return false;
 		}
 
-		List<Holder> data = listCurDir(dir);
+		List<Holder> data = ExplorerUtil.listDir(this, dir);
 
 		adapter = new FileExplorerAdapter(this, data);
 		listView.setAdapter(adapter);
@@ -119,64 +116,7 @@ public class ChooserActivity extends Activity implements OnClickListener,
 		return true;
 	}
 
-	private List<Holder> listCurDir(File path) {
-		List<Holder> list = new ArrayList<ChooserActivity.Holder>();
-
-		Holder h = new Holder();
-		h.file = new File("..");
-		list.add(h);
-
-		if (path == null || path.getAbsolutePath().length() == 0) {
-			return list;
-		}
-
-		if ((!path.exists()) || (!path.isDirectory()) || (!path.canRead())) {
-			return list;
-		}
-
-		if (path.getAbsolutePath().equals("/")) {
-			list.remove(0);
-		}
-
-		File[] files = path.listFiles();
-		if (files == null || files.length == 0) {
-			return list;
-		}
-
-		for (File file1 : files) {
-			h = new Holder();
-
-			h.file = file1;
-			list.add(h);
-		}
-
-		Collections.sort(list, new Comparator<Holder>() {
-			@SuppressLint("DefaultLocale")
-			public int compare(Holder file1, Holder file2) {
-				boolean a = file1.file.isDirectory();
-				boolean b = file2.file.isDirectory();
-
-				if (a && !b) {
-					return -1;
-				} else if (!a && b) {
-					return 1;
-				} else if (a && b) {
-					return file1.file.getName().toLowerCase()
-							.compareTo(file2.file.getName().toLowerCase());
-				} else {
-					return file1.file.getName().compareTo(file2.file.getName());
-				}
-			}
-		});
-
-		if (path.canWrite()) {
-			h = new Holder();
-			h.file = new File(getString(R.string.new_folder));
-			list.add(1, h);
-		}
-
-		return list;
-	}
+	
 
 	@Override
 	public void onClick(View v) {

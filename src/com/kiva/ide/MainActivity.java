@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -27,6 +28,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -49,12 +53,18 @@ import com.myopicmobile.textwarrior.android.RecentFiles.RecentFile;
 @SuppressWarnings("deprecation")
 @SuppressLint("HandlerLeak")
 public class MainActivity extends Activity implements OnItemClickListener,
-		OnItemLongClickListener {
+		OnItemLongClickListener, android.view.View.OnClickListener {
 
 	private DrawerLayout drawer;
 	private ListView drawerList;
 	private DrawerListAdapter adapter;
 	private ProgressDialog waitDialog;
+	private Menu menu;
+	
+	private EditText findTextInput, replaceTextInput;
+	private Button findBtn, replaceBtn, replaceAllBtn;
+	private CheckBox caseInsensitiveCheck, wholeWordCheck;
+	
 	private volatile int taskCount = 0;
 
 	private Handler taskHandler = new Handler() {
@@ -104,6 +114,15 @@ public class MainActivity extends Activity implements OnItemClickListener,
 	private void initView() {
 		drawer = (DrawerLayout) findViewById(R.id.idMainDrawerLayout);
 		drawerList = (ListView) findViewById(R.id.idMainDrawerList);
+		
+		replaceBtn = (Button) findViewById(R.id.idSearchStartReplace);
+		replaceAllBtn = (Button) findViewById(R.id.idSearchStartReplaceAll);
+		replaceTextInput = (EditText) findViewById(R.id.idSearchNewStr);
+		findTextInput = (EditText) findViewById(R.id.idSearchStr);
+		findBtn = (Button) findViewById(R.id.idSearchStartFind);
+		caseInsensitiveCheck = (CheckBox) findViewById(R.id.idSearchCaseInsCheckBox);
+		wholeWordCheck = (CheckBox) findViewById(R.id.idSearchWholeWordCheckBox);
+		
 
 		drawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
 
@@ -111,6 +130,10 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		drawerList.setAdapter(adapter);
 		drawerList.setOnItemClickListener(this);
 		drawerList.setOnItemLongClickListener(this);
+		
+		findBtn.setOnClickListener(this);
+		replaceBtn.setOnClickListener(this);
+		replaceAllBtn.setOnClickListener(this);
 	}
 
 	private void handleReadTaskFinish(ITask task) {
@@ -172,9 +195,6 @@ public class MainActivity extends Activity implements OnItemClickListener,
 	}
 
 	private void gotoLine() {
-	}
-
-	private void searchInText() {
 	}
 
 	private void saveFileAs() {
@@ -278,6 +298,8 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		tab.setCustomView(R.layout.edit_tab);
 
 		ab.addTab(tab, go);
+		
+		updateUndoRedo();
 	}
 
 	public void showWaitDialog() {
@@ -354,7 +376,44 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		} else {
 			ab.removeTab(t);
 		}
+		
+		updateUndoRedo();		
+	}
 
+	private void updateUndoRedo() {
+		if (menu == null) {
+			return;
+		}
+		
+		boolean hasTab = getActionBar().getTabCount() > 0;
+		
+		MenuItem i = menu.findItem(R.id.menu_undo);
+		if (i != null) {
+			i.setVisible(hasTab);
+		}
+		
+		i = menu.findItem(R.id.menu_redo);
+		if (i != null) {
+			i.setVisible(hasTab);
+		}
+	}
+	
+	private void doUndo() {
+		CodeEditFragment frag = getCurrentPage();
+		if (frag == null) {
+			return;
+		}
+		
+		frag.undo();
+	}
+	
+	private void doRedo() {
+		CodeEditFragment frag = getCurrentPage();
+		if (frag == null) {
+			return;
+		}
+		
+		frag.redo();
 	}
 
 	private void doCloseThis() {
@@ -490,7 +549,9 @@ public class MainActivity extends Activity implements OnItemClickListener,
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.activity_main, menu);
+		
+		this.menu = menu;
 		return true;
 	}
 
@@ -507,6 +568,12 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			break;
 		case R.id.menu_close_all:
 			doCloseAll(null);
+			break;
+		case R.id.menu_undo:
+			doUndo();
+			break;
+		case R.id.menu_redo:
+			doRedo();
 			break;
 		}
 
@@ -545,6 +612,11 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			drawer.closeDrawer(Gravity.START);
 			return;
 		}
+		
+		if (drawer.isDrawerOpen(Gravity.END)) {
+			drawer.closeDrawer(Gravity.END);
+			return;
+		}
 
 		CodeEditFragment frag = getCurrentPage();
 		if (frag == null) {
@@ -577,7 +649,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			saveFileAs();
 			break;
 		case DrawerListItem.ID_SEARCH:
-			searchInText();
+			drawer.openDrawer(Gravity.END);
 			break;
 		case DrawerListItem.ID_GOTO:
 			gotoLine();
@@ -630,4 +702,32 @@ public class MainActivity extends Activity implements OnItemClickListener,
 
 		return true;
 	}
+
+	@Override
+	public void onClick(View v) {
+		
+		CodeEditFragment frag = getCurrentPage();
+		if (frag == null) {
+			return;
+		}
+		
+		String textToFind = findTextInput.getText().toString();
+		if (TextUtils.isEmpty(textToFind)) {
+			return;
+		}
+		
+		boolean caseInsensitive = caseInsensitiveCheck.isChecked();
+		boolean wholeWord = wholeWordCheck.isChecked();
+		String textToReplace = replaceTextInput.getText().toString();
+		
+		if (v == findBtn) {
+			frag.find(textToFind, caseInsensitive, wholeWord);
+		} else if (v == replaceBtn) {
+			frag.replace(textToFind, textToReplace, false, caseInsensitive, wholeWord);
+		} else if (v == replaceAllBtn) {
+			frag.replace(textToFind, textToReplace, true, caseInsensitive, wholeWord);
+		}
+	}
+
+	
 }

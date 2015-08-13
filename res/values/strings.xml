@@ -4,6 +4,15 @@
     <string name="app_name">KivaIDE</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="whole_word">Whole Word</string>
+    <string name="case_insen">Case Insensitive</string>
+    <string name="replace_all">Replace All</string>
+    <string name="replace">Replace</string>
+    <string name="replace_succ">Replaced %d words</string>
+    <string name="notext_found">No text found</string>
+    <string name="find">Find</string>
+    <string name="str_to_find">Text to find</string>
+    <string name="new_str">Text to replace</string>
     <string name="title_new_file">New</string>
     <string name="title_open_file">Open</string>
     <string name="title_open_rec">Recents</string>
@@ -19,7 +28,10 @@
     <string name="please_wait">Please wait&#8230;</string>
     <string name="goto_choose">Choose File</string>
     <string name="file_name">File Name</string>
-    
+    <string name="copy">Copy</string>
+    <string name="cut">Cut</string>
+    <string name="paste">Paste</string>
+    <string name="select_all">Select All</string>
     <string name="rename">Rename</string>
     <string name="new_name">New name:</string>
     <string name="delete">Delete</string>
@@ -41,10 +53,13 @@
     <string name="save_succ">Save file successfuly!</string>
     <string name="sorry">Sorry!</string>
     <string name="please_report_error">Sorry, an unexpected exception has been threw!\n\nDo you want to report the crush dump?</string>
-	<string name="see_dump">Application has been crashed, see %s crash dump.</string>
-	<string name="save_change">Do you want to save file?</string>
-	<string name="check_file_to_save">Chose files to save</string>
-	<string name="save_ask">Do you really want to save this file?</string>
-	<string name="clear_rec_ask">Do you really want to clear recents?</string>
-	<string name="rec_clear_succ">Clear recents successfully!</string>
+    <string name="see_dump">Application has been crashed, see %s crash dump.</string>
+    <string name="save_change">Do you want to save file?</string>
+    <string name="check_file_to_save">Chose files to save</string>
+    <string name="save_ask">Do you really want to save this file?</string>
+    <string name="clear_rec_ask">Do you really want to clear recents?</string>
+    <string name="rec_clear_succ">Clear recents successfully!</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+
 </resources>
