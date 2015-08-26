@@ -1,4 +1,4 @@
-package com.kiva.ide.syntax;
+package com.kiva.ide.editor;
 
 import com.myopicmobile.textwarrior.common.Language;
 

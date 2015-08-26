@@ -10,6 +10,7 @@ import android.app.Fragment;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +20,8 @@ import android.widget.Toast;
 
 import com.kiva.ide.R;
 import com.kiva.ide.action.EditAction;
-import com.kiva.ide.syntax.LanguageShell;
+import com.kiva.ide.editor.LanguageShell;
+import com.kiva.ide.editor.LanguageSmali;
 import com.kiva.ide.util.AdapterUtil;
 import com.kiva.ide.util.Constant;
 import com.kiva.ide.util.Logger;
@@ -89,12 +91,7 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 		if (args != null) {
 			String content = args.getString(Constant.FILECONTENT, "");
 			editor.setText(content);
-
-			int x = args.getInt(Constant.CURX, -1);
-			int y = args.getInt(Constant.CURY, -1);
-			int p = args.getInt(Constant.CURSOR, -1);
-
-			setEditorStatus(x, y, p);
+			setEditorStatus(args.getParcelable(Constant.CURSOR));
 		}
 
 		setFileName(absFilePath);
@@ -154,12 +151,16 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 			setLang(LanguageShell.getInstance());
 			break;
 		default:
-			setLang(LanguageNonProg.getInstance());
+			if (absFilePath.endsWith(".smali")) {
+				setLang(LanguageSmali.getInstance());
+			} else {
+				setLang(LanguageNonProg.getInstance());
+			}
 			break;
 		}
-		
+
 		editor.respan();
-		
+
 		this.absFilePath = absFilePath;
 	}
 
@@ -245,6 +246,15 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 		if (x > 0 && y > 0) {
 			editor.scrollTo(x, y);
 		}
+
+	}
+
+	public void setEditorStatus(Parcelable p) {
+		if (p == null) {
+			return;
+		}
+
+		editor.restoreUiState(p);
 	}
 
 	@Override
@@ -281,15 +291,8 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 	@Override
 	public void onPause() {
 		super.onPause();
-
-		int x = editor.getScrollX();
-		int y = editor.getScrollY();
-		int p = editor.getCaretPosition();
-
 		args.putString(Constant.FILECONTENT, editor.getText());
-		args.putInt(Constant.CURX, x);
-		args.putInt(Constant.CURY, y);
-		args.putInt(Constant.CURSOR, p);
+		args.putParcelable(Constant.CURSOR, editor.getUiState());
 	}
 
 	@Override

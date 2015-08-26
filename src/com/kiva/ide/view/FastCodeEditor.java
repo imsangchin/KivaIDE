@@ -4,8 +4,8 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
+import com.kiva.ide.editor.AideLikeColorScheme;
 import com.myopicmobile.textwarrior.android.FreeScrollingTextField;
-import com.myopicmobile.textwarrior.common.ColorSchemeObsidian;
 import com.myopicmobile.textwarrior.common.Document;
 import com.myopicmobile.textwarrior.common.DocumentProvider;
 import com.myopicmobile.textwarrior.common.Language;
@@ -34,7 +34,7 @@ public class FastCodeEditor extends FreeScrollingTextField {
 		setTypeface(Typeface.MONOSPACE);
 		setHorizontalScrollBarEnabled(false);
 		setWordWrap(true);
-		setColorScheme(new ColorSchemeObsidian());
+		setColorScheme(new AideLikeColorScheme());
 		scrollTo(0, 0);
 	}
 
