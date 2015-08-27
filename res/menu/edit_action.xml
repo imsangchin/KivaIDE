@@ -3,22 +3,22 @@
 
     <item
         android:id="@id/menu_select_all"
-        android:icon="@drawable/ic_menu_selectall_holo_dark"
+        android:icon="@drawable/ic_l_select_all"
         android:showAsAction="always"
         android:title="@string/select_all"/>
     <item
         android:id="@id/menu_copy"
-        android:icon="@drawable/ic_menu_copy_holo_dark"
+        android:icon="@drawable/ic_l_copy"
         android:showAsAction="always"
         android:title="@string/copy"/>
     <item
         android:id="@id/menu_cut"
-        android:icon="@drawable/ic_menu_cut_holo_dark"
+        android:icon="@drawable/ic_l_cut"
         android:showAsAction="always"
         android:title="@string/cut"/>
     <item
         android:id="@id/menu_paste"
-        android:icon="@drawable/ic_menu_paste_holo_dark"
+        android:icon="@drawable/ic_l_paste"
         android:showAsAction="always"
         android:title="@string/paste"/>
 

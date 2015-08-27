@@ -61,5 +61,7 @@
     <string name="rec_clear_succ">Clear recents successfully!</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
+    <string name="drawer_open">Open Drawer</string>
+    <string name="drawer_close">Close Drawer</string>
 
 </resources>

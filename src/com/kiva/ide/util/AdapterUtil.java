@@ -1,12 +1,5 @@
 package com.kiva.ide.util;
 
-import static com.kiva.ide.R.drawable.ic_action_gotoline;
-import static com.kiva.ide.R.drawable.ic_action_new;
-import static com.kiva.ide.R.drawable.ic_action_open;
-import static com.kiva.ide.R.drawable.ic_action_openrecent;
-import static com.kiva.ide.R.drawable.ic_action_save;
-import static com.kiva.ide.R.drawable.ic_action_saveas;
-import static com.kiva.ide.R.drawable.ic_action_search;
 import static com.kiva.ide.bean.DrawerListItem.ID_GOTO;
 import static com.kiva.ide.bean.DrawerListItem.ID_NEW;
 import static com.kiva.ide.bean.DrawerListItem.ID_OPEN;
@@ -28,19 +21,19 @@ public class AdapterUtil {
 
 		switch (id) {
 		case ID_NEW:
-			return ic_action_new;
+			return R.drawable.ic_l_new;
 		case ID_OPEN:
-			return ic_action_open;
+			return R.drawable.ic_l_open;
 		case ID_OPEN_REC:
-			return ic_action_openrecent;
+			return R.drawable.ic_l_open_recent;
 		case ID_SAVE:
-			return ic_action_save;
+			return R.drawable.ic_l_save;
 		case ID_SAVEAS:
-			return ic_action_saveas;
+			return R.drawable.ic_l_saveas;
 		case ID_SEARCH:
-			return ic_action_search;
+			return R.drawable.ic_l_search;
 		case ID_GOTO:
-			return ic_action_gotoline;
+			return R.drawable.ic_l_goto;
 		}
 
 		return -1;

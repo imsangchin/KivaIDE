@@ -5,19 +5,19 @@ import java.io.File;
 import org.free.iface.iMainActivity;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar.Tab;
 import android.app.Fragment;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kiva.ide.BaseActivity;
 import com.kiva.ide.R;
 import com.kiva.ide.action.EditAction;
 import com.kiva.ide.editor.LanguageShell;
@@ -41,46 +41,44 @@ import com.myopicmobile.textwarrior.common.LanguagePython;
 import com.myopicmobile.textwarrior.common.Lexer;
 import com.myopicmobile.textwarrior.common.ProgressObserver;
 
-@SuppressWarnings("deprecation")
+
+
 public class CodeEditFragment extends Fragment implements iMainActivity,
 		ProgressObserver {
 	public static interface Result {
 		void requestFinish();
 	}
 
+	private View view;
 	private FastCodeEditor editor;
 	private Bundle args;
 	private String absFilePath;
-	private Tab tab;
 	public boolean ext;
 	private EditAction editAction;
 	private boolean inited = false;
 	private FindThread findThread;
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
+	private Context context;
+	
+	@SuppressLint("InflateParams")
+	public CodeEditFragment(Context ctx, Bundle args) {
+		this.context = ctx;
+		this.args = args;
+		view = LayoutInflater.from(ctx).inflate(R.layout.fragment_code_edit, null, false);
+		editor = (FastCodeEditor) view.findViewById(R.id.idFragEditCodeEditor);
+		
 		editAction = new EditAction(this);
-		args = getArguments();
-
+		
 		if (args != null) {
 			absFilePath = args.getString(Constant.FILENAME, Constant.UNTITLED);
 		} else {
 			Logger.w("Arguments is null, use default!");
 			absFilePath = Constant.UNTITLED;
 		}
-
 	}
 
-	@SuppressLint("InflateParams")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_code_edit, null, false);
-
-		editor = (FastCodeEditor) view.findViewById(R.id.idFragEditCodeEditor);
-
 		setData();
 		return view;
 	}
@@ -95,8 +93,6 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 		}
 
 		setFileName(absFilePath);
-
-		editor.requestFocus();
 	}
 
 	private void initDataOnce() {
@@ -121,12 +117,7 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 	}
 
 	public void setFileName(String absFilePath) {
-		if (tab != null) {
-			((TextView) tab.getCustomView().findViewById(R.id.idTabTitle))
-					.setText(new File(absFilePath).getName());
-		}
-
-		switch (AdapterUtil.getFileIcon(getActivity(), new File(absFilePath))) {
+		switch (AdapterUtil.getFileIcon(context, new File(absFilePath))) {
 		case R.drawable.file_java:
 			if (absFilePath.endsWith(".js")) {
 				setLang(LanguageJavascript.getInstance());
@@ -162,10 +153,6 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 		editor.respan();
 
 		this.absFilePath = absFilePath;
-	}
-
-	public void setTab(Tab tab) {
-		this.tab = tab;
 	}
 
 	public FastCodeEditor getEditor() {
@@ -268,7 +255,7 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 		case R.id.menu_copy:
 		case R.id.menu_cut:
 		case R.id.menu_paste:
-			ClipboardManager cb = (ClipboardManager) getActivity()
+			ClipboardManager cb = (ClipboardManager) context
 					.getSystemService(Context.CLIPBOARD_SERVICE);
 			if (id == R.id.menu_copy) {
 				editor.copy(cb);
@@ -337,7 +324,13 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 
 	@Override
 	public boolean showEditActiton() {
-		getActivity().startActionMode(editAction);
+		BaseActivity ac = (BaseActivity) getActivity();
+		
+		Toolbar tb = ac.getToolbar();
+		
+		if (tb != null) {
+			tb.startActionMode(editAction);
+		}
 		return true;
 	}
 
@@ -383,13 +376,13 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 						editor.setSelectionRange(start, res.searchTextLength);
 						editor.respan();
 					} else {
-						Toast.makeText(getActivity(), R.string.notext_found,
+						Toast.makeText(context, R.string.notext_found,
 								Toast.LENGTH_SHORT).show();
 					}
 				} else if (arg0 == 16) {
 					editor.respan();
 					Toast.makeText(
-							getActivity(),
+							context,
 							getString(R.string.replace_succ,
 									res.replacementCount), Toast.LENGTH_SHORT)
 							.show();
@@ -401,5 +394,5 @@ public class CodeEditFragment extends Fragment implements iMainActivity,
 	@Override
 	public void onError(int arg0, int arg1, String arg2) {
 	}
-
+	
 }

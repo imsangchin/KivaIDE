@@ -1,90 +1,106 @@
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/idMainDrawerLayout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.kiva.ide"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <include layout="@layout/toolbar" >
+    </include>
 
-    <FrameLayout
-        android:id="@+id/idMainContainer"
+    <com.kiva.ide.view.materialtab.MaterialTabs
+        android:id="@+id/idMainMaterialTabs"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="48dp"
+        android:background="@color/toolbar_background"
+        app:mtPaddingMiddle="false"
+        app:mtSameWeightTabs="true" />
 
-    <ListView
-        android:id="@+id/idMainDrawerList"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/idMainDrawerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@null"
-        android:dividerHeight="3dp"
-        android:padding="10dp" />
+        android:layout_height="match_parent" >
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:padding="10dp" >
+        <android.support.v4.view.ViewPager
+            android:id="@+id/idMainViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-        <LinearLayout
+        <ListView
+            android:id="@+id/idMainDrawerList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:layout_gravity="start"
+            android:choiceMode="singleChoice"
+            android:divider="@null"
+            android:dividerHeight="3dp"
+            android:padding="10dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
             android:padding="10dp" >
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="@string/str_to_find" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp" >
 
-            <EditText
-                android:id="@+id/idSearchStr"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/str_to_find" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="@string/new_str" />
+                <EditText
+                    android:id="@+id/idSearchStr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true" />
 
-            <EditText
-                android:id="@+id/idSearchNewStr"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/new_str" />
 
-            <CheckBox
-                android:id="@+id/idSearchCaseInsCheckBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/case_insen" />
-            
-            <CheckBox
-                android:id="@+id/idSearchWholeWordCheckBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/whole_word" />
-            
+                <EditText
+                    android:id="@+id/idSearchNewStr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true" />
 
-            <Button
-                android:id="@+id/idSearchStartFind"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/find" />
+                <CheckBox
+                    android:id="@+id/idSearchCaseInsCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/case_insen" />
 
-            <Button
-                android:id="@+id/idSearchStartReplace"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/replace" />
+                <CheckBox
+                    android:id="@+id/idSearchWholeWordCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/whole_word" />
 
-            <Button
-                android:id="@+id/idSearchStartReplaceAll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/replace_all" />
-        </LinearLayout>
-    </ScrollView>
+                <Button
+                    android:id="@+id/idSearchStartFind"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/find" />
 
-</android.support.v4.widget.DrawerLayout>
+                <Button
+                    android:id="@+id/idSearchStartReplace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/replace" />
+
+                <Button
+                    android:id="@+id/idSearchStartReplaceAll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/replace_all" />
+            </LinearLayout>
+        </ScrollView>
+    </android.support.v4.widget.DrawerLayout>
+
+</LinearLayout>

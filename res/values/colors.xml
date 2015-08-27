@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ide_line_background">#109991</color>
-    <drawable name="ide_popup_window_line_background">#E2E2E2</drawable>
-    <color name="ide_popup_window_line_space">#BEBEBE</color>
+     <color name="toolbar_background">#607D8B</color>
+     <color name="toolbar_background_dark">#455A64</color>
 </resources>

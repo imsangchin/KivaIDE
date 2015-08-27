@@ -59,5 +59,7 @@
     <string name="rec_clear_succ">成功清理历史记录!</string>
     <string name="undo">撤销</string>
     <string name="redo">重做</string>
+    <string name="drawer_open">打开侧边栏</string>
+    <string name="drawer_close">关闭侧边栏</string>
 
 </resources>

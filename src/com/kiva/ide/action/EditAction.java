@@ -15,6 +15,8 @@ public class EditAction implements ActionMode.Callback {
 
 	public EditAction(CodeEditFragment a) {
 		this.act = a;
+		
+		
 	}
 
 	@Override

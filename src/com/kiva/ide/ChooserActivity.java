@@ -3,7 +3,6 @@ package com.kiva.ide;
 import java.io.File;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,8 +12,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.Toolbar.OnMenuItemClickListener;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -29,7 +31,7 @@ import com.kiva.ide.adapter.FileExplorerAdapter;
 import com.kiva.ide.util.Constant;
 import com.kiva.ide.util.ExplorerUtil;
 
-public class ChooserActivity extends Activity implements OnClickListener,
+public class ChooserActivity extends BaseActivity implements OnClickListener,
 		OnItemClickListener {
 
 	public static class Holder {
@@ -52,8 +54,22 @@ public class ChooserActivity extends Activity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chooser);
 
+		initToolbar();
 		initData();
 		initView();
+	}
+	
+	private void initToolbar() {
+		Toolbar toolbar = (Toolbar) findViewById(R.id.idToolbar);  
+		toolbar.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				return onOptionsItemSelected(arg0);
+			}
+		});
+		toolbar.setLogo(R.drawable.folder);
+		toolbar.setTitle(R.string.goto_choose);
+		setSupportActionBar(toolbar);
 	}
 
 	private void initView() {

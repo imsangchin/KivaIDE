@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+
+    <drawable name="transpent">#00ffffff</drawable>
+    <drawable name="toolbar_btn_pressed">#55ffffff</drawable>
+
 </resources>

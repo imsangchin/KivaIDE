@@ -5,21 +5,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.Toolbar.OnMenuItemClickListener;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -33,13 +36,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kiva.ide.adapter.DrawerListAdapter;
 import com.kiva.ide.adapter.RecentFileAdapter;
+import com.kiva.ide.adapter.TabViewPagerAdapter;
 import com.kiva.ide.bean.DrawerListItem;
 import com.kiva.ide.fragment.CodeEditFragment;
-import com.kiva.ide.listener.TabListener;
 import com.kiva.ide.task.FileReadTask;
 import com.kiva.ide.task.FileWriteTask;
 import com.kiva.ide.task.ITask;
@@ -48,12 +52,12 @@ import com.kiva.ide.util.Constant;
 import com.kiva.ide.util.Logger;
 import com.kiva.ide.util.UiUtil;
 import com.kiva.ide.view.FastCodeEditor;
+import com.kiva.ide.view.materialtab.MaterialTabs;
 import com.myopicmobile.textwarrior.android.RecentFiles;
 import com.myopicmobile.textwarrior.android.RecentFiles.RecentFile;
 
-@SuppressWarnings("deprecation")
 @SuppressLint("HandlerLeak")
-public class MainActivity extends Activity implements OnItemClickListener,
+public class MainActivity extends BaseActivity implements OnItemClickListener,
 		OnItemLongClickListener, android.view.View.OnClickListener {
 
 	private DrawerLayout drawer;
@@ -61,9 +65,11 @@ public class MainActivity extends Activity implements OnItemClickListener,
 	private DrawerListAdapter adapter;
 	private ProgressDialog waitDialog;
 	private Menu menu;
-
+	private Toolbar toolbar;
+	private ViewPager viewPager;
+	private MaterialTabs tabs;
+	private TabViewPagerAdapter pagerAdapter;
 	private ActionBarDrawerToggle toggle;
-
 	private EditText findTextInput, replaceTextInput;
 	private Button findBtn, replaceBtn, replaceAllBtn;
 	private CheckBox caseInsensitiveCheck, wholeWordCheck;
@@ -99,8 +105,22 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		initToolbar();
 		initData();
 		initView();
+	}
+
+	private void initToolbar() {
+		toolbar = (Toolbar) findViewById(R.id.idToolbar);  
+		toolbar.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				return onOptionsItemSelected(arg0);
+			}
+		});
+		toolbar.setLogo(R.drawable.ic_launcher);
+		setSupportActionBar(toolbar);
 	}
 
 	private void initData() {
@@ -109,10 +129,11 @@ public class MainActivity extends Activity implements OnItemClickListener,
 
 		waitDialog = UiUtil.createWaitingDialog(this);
 
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayShowTitleEnabled(false);
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setHomeButtonEnabled(true);
+        ab.setDisplayShowTitleEnabled(false);
+//		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_MaterialTabS);
 	}
 
 	private void initView() {
@@ -126,11 +147,22 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		findBtn = (Button) findViewById(R.id.idSearchStartFind);
 		caseInsensitiveCheck = (CheckBox) findViewById(R.id.idSearchCaseInsCheckBox);
 		wholeWordCheck = (CheckBox) findViewById(R.id.idSearchWholeWordCheckBox);
-
+		findBtn.setOnClickListener(this);
+		replaceBtn.setOnClickListener(this);
+		replaceAllBtn.setOnClickListener(this);
+		
+		tabs = (MaterialTabs) findViewById(R.id.idMainMaterialTabs);
+		viewPager = (ViewPager) findViewById(R.id.idMainViewPager);
+		pagerAdapter = new TabViewPagerAdapter(getFragmentManager());
+		viewPager.setAdapter(pagerAdapter);
+		tabs.setViewPager(viewPager);
+		tabs.setTextColorSelected(Color.WHITE);
+		tabs.setTextColorUnselected(Color.WHITE);
+		
 		drawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
-		toggle = new ActionBarDrawerToggle(this, drawer, R.drawable.ic_drawer,
-				R.string.yes, R.string.no);
+		toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
 		toggle.setDrawerIndicatorEnabled(true);
+		drawer.setDrawerListener(toggle);
 		toggle.syncState();
 
 		adapter = new DrawerListAdapter(this, null);
@@ -138,9 +170,6 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		drawerList.setOnItemClickListener(this);
 		drawerList.setOnItemLongClickListener(this);
 
-		findBtn.setOnClickListener(this);
-		replaceBtn.setOnClickListener(this);
-		replaceAllBtn.setOnClickListener(this);
 	}
 
 	private void handleReadTaskFinish(ITask task) {
@@ -156,7 +185,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			return;
 		}
 
-		addTab(data.getString(Constant.FILENAME, ""), // if "" it returned, tab
+		addMaterialTab(data.getString(Constant.FILENAME, ""), // if "" it returned, MaterialTab
 														// will not add
 				data.getString(Constant.FILECONTENT));
 	}
@@ -179,19 +208,13 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			return;
 		}
 
-		ActionBar ab = getActionBar();
-		int count = ab.getTabCount();
+		int count = pagerAdapter.getCount();
 		for (int i = 0; i < count; i++) {
-			Tab t = ab.getTabAt(i);
-			if (t == null) {
-				continue;
-			}
-
-			CodeEditFragment f = (CodeEditFragment) t.getTag();
+			CodeEditFragment f = getPage(i);
 			if (f == null) {
 				continue;
 			}
-
+			
 			if (f.hashCode() == hash) {
 				String name = data.getString(Constant.FILENAME);
 				f.setFileName(name);
@@ -240,7 +263,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 				newAbsFileName = fragFileName;
 			}
 		}
-
+		
 		ed.setEdited(false);
 
 		FileWriteTask task = new FileWriteTask(ed.getText(),
@@ -259,9 +282,9 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			return;
 		}
 
-		Tab t = isFileOpend(rf.getFileName());
-		if (t != null) {
-			getActionBar().selectTab(t);
+		CodeEditFragment frag = isFileOpend(rf.getFileName());
+		if (frag != null) {
+			viewPager.setCurrentItem(pagerAdapter.indexOf(frag), true);
 			return;
 		}
 
@@ -269,43 +292,37 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		TaskManager.startTask(task, Constant.REQ_READ, taskHandler);
 	}
 
-	public void addTab(String text) {
-		addTab(null, text);
+	public void addMaterialTab(String text) {
+		addMaterialTab(null, text);
 	}
 
-	public void addTab(String fileName, String text) {
-		addTab(fileName, text, true);
+	public void addMaterialTab(String fileName, String text) {
+		addMaterialTab(fileName, text, true);
 	}
 
-	public void addTab(String fileName, String text, boolean go) {
+	public void addMaterialTab(String fileName, String text, boolean go) {
 		Bundle args = new Bundle();
 
 		args.putString(Constant.FILENAME, fileName);
 		args.putString(Constant.FILECONTENT, text == null ? "" : text);
 
-		addTab(args, go);
+		addMaterialTab(args, go);
 	}
 
-	public void addTab(Bundle data, boolean go) {
+	public void addMaterialTab(Bundle data, boolean go) {
 		if (data == null) {
 			return;
 		}
 
 		String fileName = data.getString(Constant.FILENAME, null);
-		if (fileName != null) {
-			if (fileName.equals("") || fileName.trim().equals("")) {
-				return;
-			}
+		if (TextUtils.isEmpty(fileName)) {
+			fileName = Constant.UNTITLED;
 		}
 
-		ActionBar ab = getActionBar();
-		Tab tab = ab.newTab();
-
-		tab.setTabListener(new TabListener<CodeEditFragment>(
-				CodeEditFragment.class, this, data));
-		tab.setCustomView(R.layout.edit_tab);
-
-		ab.addTab(tab, go);
+		CodeEditFragment frag = new CodeEditFragment(this, data);
+		
+		int pos = pagerAdapter.add(frag);
+		viewPager.setCurrentItem(pos);
 
 		updateUndoRedo();
 	}
@@ -330,9 +347,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 	}
 
 	public int getCurrentPos() {
-		Tab tab = getActionBar().getSelectedTab();
-
-		return tab == null ? -1 : tab.getPosition();
+		return viewPager.getCurrentItem();
 	}
 
 	public CodeEditFragment getPage(int p) {
@@ -340,23 +355,15 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			return null;
 		}
 
-		Tab tab = getActionBar().getTabAt(p);
-		if (tab == null) {
-			return null;
-		}
-
-		CodeEditFragment frag = (CodeEditFragment) tab.getTag();
-
-		return frag;
+		return (CodeEditFragment) pagerAdapter.getItem(p);
 	}
-
-	private void doCloseAt(final Tab t, boolean promptToSave) {
-		if (t == null) {
+	
+	private void doCloseAt(final CodeEditFragment frag, boolean promptToSave) {
+		if (frag == null) {
 			return;
 		}
-
-		final ActionBar ab = getActionBar();
-		final CodeEditFragment frag = (CodeEditFragment) t.getTag();
+		
+		final int pos = pagerAdapter.indexOf(frag);
 
 		if (promptToSave && frag.getEditor().isEdited()) {
 			new AlertDialog.Builder(this)
@@ -369,7 +376,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 								public void onClick(DialogInterface dialog,
 										int which) {
 									saveFile(null, frag);
-									ab.removeTab(t);
+									pagerAdapter.rm(pos);
 								}
 							})
 					.setNegativeButton(android.R.string.no,
@@ -378,11 +385,11 @@ public class MainActivity extends Activity implements OnItemClickListener,
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									ab.removeTab(t);
+									pagerAdapter.rm(pos);
 								}
 							}).show();
 		} else {
-			ab.removeTab(t);
+			pagerAdapter.rm(pos);
 		}
 
 		updateUndoRedo();
@@ -393,16 +400,16 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			return;
 		}
 
-		boolean hasTab = getActionBar().getTabCount() > 0;
+		boolean hasMaterialTab = pagerAdapter.getCount() > 0;
 
 		MenuItem i = menu.findItem(R.id.menu_undo);
 		if (i != null) {
-			i.setVisible(hasTab);
+			i.setVisible(hasMaterialTab);
 		}
 
 		i = menu.findItem(R.id.menu_redo);
 		if (i != null) {
-			i.setVisible(hasTab);
+			i.setVisible(hasMaterialTab);
 		}
 	}
 
@@ -425,42 +432,46 @@ public class MainActivity extends Activity implements OnItemClickListener,
 	}
 
 	private void doCloseThis() {
-		ActionBar ab = getActionBar();
-		Tab t = ab.getSelectedTab();
-
-		doCloseAt(t, true);
+		int pos = viewPager.getCurrentItem();
+		if (pos < 0) {
+			return;
+		}
+		
+		CodeEditFragment frag = getPage(pos);
+		if (frag == null) {
+			return;
+		}
+		
+		doCloseAt(frag, true);
 	}
 
 	private void doCloseOther() {
-		ActionBar ab = getActionBar();
-		Tab tab = ab.getSelectedTab();
-
-		if (tab == null) {
+		CodeEditFragment frag = getCurrentPage();
+		if (frag == null) {
 			return;
 		}
-
-		doCloseAll(tab);
+		
+		doCloseAll(frag);
 	}
 
-	private void doCloseAll(final Tab ignore) {
-		final ActionBar ab = getActionBar();
-
+	private void doCloseAll(final CodeEditFragment ignore) {
 		final List<CodeEditFragment> unsavedPage = new ArrayList<CodeEditFragment>();
 
-		for (int i = 0; i < ab.getTabCount(); i++) {
-			Tab t = ab.getTabAt(i);
+		int count = pagerAdapter.getCount();
+		for (int i = 0; i < count; i++) {
+			CodeEditFragment frag = getPage(0);
+			
+			if (frag != null) {
+				if (ignore != null && ignore == frag) {
+					continue;
+				}
 
-			if (ignore != null && ignore == t) {
-				continue;
+				if (frag.getEditor().isEdited()) {
+					unsavedPage.add(frag);
+				}
+
+				doCloseAt(frag, false);
 			}
-
-			CodeEditFragment frag = (CodeEditFragment) t.getTag();
-			if (frag.getEditor().isEdited()) {
-				unsavedPage.add(frag);
-			}
-
-			doCloseAt(t, false);
-			i--;
 		}
 
 		if (unsavedPage.size() > 0) {
@@ -501,7 +512,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		}
 
 	}
-
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK || data == null) {
@@ -519,15 +530,20 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			Logger.d("choosed: " + path);
 
 			if (requestCode == Constant.REQ_CHOOSE) {
-				Tab t = isFileOpend(path);
+				CodeEditFragment t = isFileOpend(path);
 				if (t != null) {
-					getActionBar().selectTab(t);
+					viewPager.setCurrentItem(pagerAdapter.indexOf(t), true);
 					return;
 				}
 
 				FileReadTask task = new FileReadTask(path, null, false);
 				TaskManager.startTask(task, Constant.REQ_READ, taskHandler);
 			} else if (requestCode == Constant.REQ_CHOOSE_SAVEAS) {
+				int pos = getCurrentPos();
+				TextView tv = (TextView) tabs.getChildAt(pos).findViewById(R.id.mt_tab_title);
+				if (tv != null) {
+					tv.setText(new File(path).getName());
+				}
 				saveFile(path, null);
 			}
 
@@ -536,24 +552,34 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		}
 	}
 
-	private Tab isFileOpend(String path) {
-		ActionBar ab = getActionBar();
-		int count = ab.getTabCount();
+	private CodeEditFragment isFileOpend(String path) {
+		int count = pagerAdapter.getCount();
+		
 		for (int i = 0; i < count; i++) {
-			Tab t = ab.getTabAt(i);
-			if (t == null)
+			CodeEditFragment frag = getPage(i);
+			if (frag == null) {
 				continue;
-
-			CodeEditFragment frag = (CodeEditFragment) t.getTag();
-
+			}
+			
 			if (frag.getFileName().equals(path)) {
-				ab.selectTab(t);
-				return t;
+				return frag;
 			}
 		}
 
 		return null;
 	}
+	
+	@Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        toggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        toggle.onConfigurationChanged(newConfig);
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -568,9 +594,6 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		int id = item.getItemId();
 
 		switch (id) {
-		case android.R.id.home:
-			toggleDrawer();
-			break;
 		case R.id.menu_close_this:
 			doCloseThis();
 			break;
@@ -592,12 +615,19 @@ public class MainActivity extends Activity implements OnItemClickListener,
 	}
 
 	private void toggleDrawer() {
-		int gravity = Gravity.START;
-
-		if (drawer.isDrawerOpen(gravity)) {
-			drawer.closeDrawer(gravity);
+		int gravityL = Gravity.START;
+		int gravityR = Gravity.END;
+		
+		boolean lOpen = drawer.isDrawerOpen(gravityL);
+		boolean rOpen = drawer.isDrawerOpen(gravityR);
+	
+		if (rOpen)
+			drawer.closeDrawer(gravityR);
+		
+		if (lOpen) {
+			drawer.closeDrawer(gravityL);
 		} else {
-			drawer.openDrawer(gravity);
+			drawer.openDrawer(gravityL);
 		}
 	}
 
@@ -650,7 +680,7 @@ public class MainActivity extends Activity implements OnItemClickListener,
 
 		switch ((int) id) {
 		case DrawerListItem.ID_NEW:
-			addTab("");
+			addMaterialTab("");
 			break;
 		case DrawerListItem.ID_OPEN:
 			openFileBrowser();
@@ -745,6 +775,11 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			frag.replace(textToFind, textToReplace, true, caseInsensitive,
 					wholeWord);
 		}
+	}
+	
+	@Override
+	public Toolbar getToolbar() {
+		return toolbar;
 	}
 
 }

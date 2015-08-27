@@ -9,4 +9,3 @@ Thanks
 =======
 * [CIDE](http://tieba.baidu.com/f?ie=utf-8&kw=cide&fr=search)
 * [TextWarrior](https://github.com/brnogz/TextWarriorLibrary)
-
